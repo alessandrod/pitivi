@@ -262,14 +262,29 @@ class InteractivePitivi(Pitivi):
         if self.mainloop:
             self.mainloop.run()
 
+class IPythonPitivi(InteractivePitivi):
+    def run(self):
+        from IPython.Shell import IPShellGTK
+
+        self._shell = IPShellGTK()
+        self._shell.start()
+        InteractivePitivi.run(self)
+
 def main(argv):
     """ Start PiTiVi ! """
     from optparse import OptionParser
     check.initial_checks()
     parser = OptionParser()
-    (unused_options, args) = parser.parse_args(argv[1:])
-    if len(args) > 0:
-        ptv = InteractivePitivi(filepath=args[0])
+    parser.add_option('-i', '--ipython', action='store_true')
+
+    options, args = parser.parse_args(argv[1:])
+    if options.ipython:
+        cls = IPythonPitivi
     else:
-        ptv = InteractivePitivi()
+        cls = InteractivePitivi
+
+    if len(args) > 0:
+        ptv = cls(filepath=args[0])
+    else:
+        ptv = cls()
     ptv.run()
