@@ -43,7 +43,7 @@ from gettext import gettext as _
 from pitivi.log.loggable import Loggable
 
 from timeline import Timeline
-from projecttabs import ProjectTabs
+from pitivi.ui.notebook import Notebook
 from viewer import PitiviViewer
 from pitivi.configure import pitivi_version, APPNAME, get_pixmap_dir, \
      get_global_pixmap_dir
@@ -377,7 +377,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         vpaned.pack2(self.timeline, resize=False, shrink=False)
         hpaned = gtk.HPaned()
         vpaned.pack1(hpaned, resize=True, shrink=False)
-        self.projecttabs = ProjectTabs()
+        self.projecttabs = Notebook()
 
         self.sourcelist = SourceList(instance, self.uimanager)
         self.projecttabs.append_page(self.sourcelist, gtk.Label(_("Clip Library")))
@@ -388,13 +388,16 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.timeline.ruler.connect('seek', self._timelineRulerSeekCb)
 
         # Viewer
+        self.viewertab = Notebook()
         self.viewer = PitiviViewer()
+        label = gtk.Label(_(""))
+        self.viewertab.append_page(self.viewer, label)
         # drag and drop
         self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
                            [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
                            gtk.gdk.ACTION_COPY)
         self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
-        hpaned.pack2(self.viewer, resize=False, shrink=False)
+        hpaned.pack2(self.viewertab, resize=False, shrink=False)
         self.viewer.connect("expose-event", self._exposeEventCb)
 
         # window and pane position defaults

@@ -21,7 +21,7 @@
 
 import gtk
 
-class ProjectTabs(gtk.Notebook):
+class Notebook(gtk.Notebook):
     def __init__(self):
         """ initialize """
         gtk.Notebook.__init__(self)
