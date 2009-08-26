@@ -360,6 +360,13 @@ class SourceFactory(ObjectFactory):
     def _singlePadAddedCb(self, dbin, pad, topbin):
         self.debug("dbin:%r, pad:%r, topbin:%r", dbin, pad, topbin)
         if hasattr(topbin, "volume"):
+            our_state = dbin.get_state()[1]
+            for element in [topbin.aconv, topbin.ares, topbin.volume]:
+                state = element.get_state()[1]
+                if state != our_state:
+                    self.debug("OH! %s is the sucker!" % element)
+                element.sync_state_with_parent()
+
             pad.link(topbin.aconv.get_pad("sink"))
             topbin.ghostpad = gst.GhostPad("src", topbin.volume.get_pad("src"))
         else:
