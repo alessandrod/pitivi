@@ -32,7 +32,14 @@ class ThumbnailCache(object):
 
     def __init__(self, size=100):
         object.__init__(self)
-        self.queue = collections.deque()
+        if hasattr(collections.deque, "remove"):
+            self.queue = collections.deque()
+        else:
+            # python < 2.5
+            class FallbackQueue(list):
+                def popleft(self):
+                    return self.pop(0)
+            self.queue = FallbackQueue()
         self.cache = {}
         self.hits = 0
         self.misses = 0
