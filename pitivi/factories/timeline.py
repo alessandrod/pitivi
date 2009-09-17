@@ -75,7 +75,7 @@ class TimelineSourceFactory(SourceFactory):
         self._connectTimeline()
 
     def clean(self):
-        for track in self.timeline.tracks:
+        for track in list(self.timeline.tracks):
             self._removeTrack(track)
 
         self._disconnectTimeline()
