@@ -41,6 +41,10 @@ def intersect(b1, b2):
 class Preview(goocanvas.ItemSimple, goocanvas.Item, Zoomable):
 
     __gtype_name__ = 'Preview'
+    __gproperties__ = {
+        'height': (float, "height", "Height",
+                0, (2 ** 32) - 1, 0, gobject.PARAM_READWRITE)
+    }
 
     def __init__(self, instance, element, height=46, **kwargs):
         super(Preview, self).__init__(**kwargs)
@@ -51,13 +55,21 @@ class Preview(goocanvas.ItemSimple, goocanvas.Item, Zoomable):
         self.props.pointer_events = False
 
 ## properties
+    def do_get_property(self, pspec):
+        if pspec.name == 'height':
+            return self._get_height()
+
+    def do_set_property(self, pspec, value):
+        if pspec.name == 'height':
+            return self._set_height(value)
 
     def _get_height(self):
         return self._height
     def _set_height (self, value):
         self._height = value
         self.changed(True)
-    height = gobject.property(_get_height, _set_height, type=float)
+
+    height = property(_get_height, _set_height)
 
 ## element callbacks
 
@@ -110,3 +122,4 @@ class Preview(goocanvas.ItemSimple, goocanvas.Item, Zoomable):
     def do_simple_is_item_at(self, x, y, cr, pointer_event):
         return (between(0, x, self.nsToPixel(self.element.duration)) and
             between(0, y, self.height))
+gobject.type_register(Preview)

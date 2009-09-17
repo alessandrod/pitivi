@@ -60,6 +60,11 @@ class Curve(goocanvas.ItemSimple, goocanvas.Item, View, Zoomable):
 
     __gtype_name__ = 'Curve'
 
+    __gproperties__ = {
+        'height': (float, "height", "Height",
+                0, (2 ** 32) - 1, 0, gobject.PARAM_READWRITE)
+    }
+
     class Controller(Controller):
 
         _cursor = HAND
@@ -149,15 +154,25 @@ class Curve(goocanvas.ItemSimple, goocanvas.Item, View, Zoomable):
 
 ## properties
 
+    def do_get_property(self, pspec):
+        if pspec.name == 'height':
+            return self._get_height()
+
+    def do_set_property(self, pspec, value):
+        if pspec.name == 'height':
+            return self._set_height(value)
+
     def _get_height(self):
         return self._height
+
     def _set_height (self, value):
         self._height = value
         self._min = CURVE_STROKE_WIDTH / 2
         self._max = value - (CURVE_STROKE_WIDTH / 2)
         self._range = self._max - self._min
         self.changed(True)
-    height = gobject.property(_get_height, _set_height, type=float)
+
+    height = property(_get_height, _set_height)
 
 ## element callbacks
 
@@ -335,3 +350,4 @@ class Curve(goocanvas.ItemSimple, goocanvas.Item, View, Zoomable):
                 after = keyframe
         assert before.time <= after.time
         return before, after
+gobject.type_register(Curve)
