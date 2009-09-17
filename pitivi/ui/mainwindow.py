@@ -335,7 +335,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
             elif action_name in [
                 "ProjectSettings", "Quit", "File", "Edit", "Help", "About",
                 "View", "FullScreen", "FullScreenAlternate",
-                "ImportSourcesFolder", "PluginManager", "PlayPause",
+                "ImportSourcesFolder", "PlayPause",
                 "Project", "FrameForward", "FrameBackward",
                 "ShowHideMainToolbar", "ShowHideTimelineToolbar", "Library",
                 "Timeline", "Viewer", "FrameForward", "FrameBackward",
