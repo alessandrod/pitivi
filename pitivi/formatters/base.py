@@ -131,7 +131,7 @@ class Formatter(Signallable, Loggable):
         self._loadProject(location, project)
 
     def _projectNameFromURI(self, uri):
-        path = urlparse(uri).path
+        path = urlparse(uri)[2]
         basename = os.path.basename(path)
         return os.path.splitext(basename)[0]
 
