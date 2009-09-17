@@ -22,7 +22,10 @@
 from unittest import TestCase
 from StringIO import StringIO
 import gst
-from xml.etree.ElementTree import Element, SubElement
+try:
+    from xml.etree.ElementTree import Element, SubElement
+except ImportError:
+    from elementtree.ElementTree import Element, SubElement
 
 from pitivi.reflect import qual, namedAny
 from pitivi.formatters.etree import ElementTreeFormatter, version, \

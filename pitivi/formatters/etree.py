@@ -24,7 +24,10 @@ import gobject
 gobject.threads_init()
 import gst
 
-from xml.etree.ElementTree import Element, SubElement, tostring, parse
+try:
+    from xml.etree.ElementTree import Element, SubElement, tostring, parse
+except ImportError:
+    from elementtree.ElementTree import Element, SubElement, tostring, parse
 
 from pitivi.reflect import qual, namedAny
 from pitivi.factories.base import SourceFactory
