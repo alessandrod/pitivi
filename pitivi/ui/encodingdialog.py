@@ -106,7 +106,7 @@ class EncodingDialog(GladeWindow, Loggable):
                                        action=gtk.FILE_CHOOSER_ACTION_SAVE)
         dialog.set_icon_name("pitivi")
         if self.outfile:
-            fullfilename = urlparse(self.outfile).path
+            fullfilename = urlparse(self.outfile)[2]
             dialog.set_filename(urllib.url2pathname(fullfilename))
             dialog.set_current_name(urllib.url2pathname(os.path.basename(fullfilename)))
         else:
@@ -116,7 +116,7 @@ class EncodingDialog(GladeWindow, Loggable):
         dialog.hide()
         if res == gtk.RESPONSE_ACCEPT:
             self.outfile = dialog.get_uri()
-            shortfilename = os.path.basename(urlparse(self.outfile).path)
+            shortfilename = os.path.basename(urlparse(self.outfile)[2])
             button.set_label(urllib.url2pathname(shortfilename))
             self.recordbutton.set_sensitive(True)
             self.progressbar.set_text("")
