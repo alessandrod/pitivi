@@ -296,6 +296,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
             ("Loop", gtk.STOCK_REFRESH, _("Loop"), None, LOOP,
                 self.loop),
             ("Help", None, _("_Help")),
+            ("AddTitle", None, _("Add title..."), None, None, self._addTitleCb),
         ]
 
         self.toggleactions = [
@@ -344,7 +345,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 "ShowHideMainToolbar", "ShowHideTimelineToolbar", "Library",
                 "Timeline", "Viewer", "FrameForward", "FrameBackward",
                 "SecondForward", "SecondBackward", "EdgeForward",
-                "EdgeBackward", "Preferences"]:
+                "EdgeBackward", "Preferences", "AddTitle"]:
                 action.set_sensitive(True)
             elif action_name in ["NewProject", "SaveProjectAs", "OpenProject"]:
                 if instance.settings.fileSupportEnabled:
@@ -644,6 +645,51 @@ class PitiviMainWindow(gtk.Window, Loggable):
         abt.set_logo_icon_name("pitivi")
         abt.connect("response", self._aboutResponseCb)
         abt.show()
+
+    def _addTitleCb(self, unused_action):
+        from pitivi.ui.title_edit import TitleEditDialog
+
+        dialog = TitleEditDialog()
+        dialog.widgets['radiobutton5'].props.active = True
+        buffer = dialog.widgets['textview'].props.buffer
+        buffer.set_text('Hello, World!')
+        response = dialog.run()
+        dialog.destroy()
+
+        if response != gtk.RESPONSE_OK:
+            return
+
+        def color_tuple(c):
+            return (
+                c.props.color.red_float,
+                c.props.color.green_float,
+                c.props.color.blue_float,
+                c.props.alpha / 65536.0)
+
+        text = buffer.get_text(*buffer.get_bounds())
+        print text
+        font, size_str = \
+            dialog.widgets['fontbutton'].props.font_name.rsplit(None, 1)
+        text_size = int(size_str)
+        bg_color = color_tuple(dialog.widgets['bgcolor_button'])
+        fg_color = color_tuple(dialog.widgets['fgcolor_button'])
+
+        for i, (x_alignment, y_alignment) in enumerate([
+                (0.0, 0.0), (0.5, 0.0), (1.0, 0.0),
+                (0.0, 0.5), (0.5, 0.5), (1.0, 0.5),
+                (0.0, 1.0), (0.5, 1.0), (1.0, 1.0)]):
+            if dialog.widgets['radiobutton%d' % (i + 1)].props.active:
+                break
+
+        from pitivi.factories.title import TitleSourceFactory
+        self.app.current.sources.addFactory(TitleSourceFactory(
+            text=text,
+            text_size=text_size,
+            font=font,
+            x_alignment=x_alignment,
+            y_alignment=y_alignment,
+            bg_color=bg_color,
+            fg_color=fg_color))
 
     def _undoCb(self, action):
         self.app.action_log.undo()

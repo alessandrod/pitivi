@@ -28,6 +28,7 @@
       <menuitem action="ImportfromCam" />
       <menuitem action="NetstreamCapture" />
       <menuitem action="Screencast" />
+      <menuitem action="AddTitle" />
       <placeholder name="SourceList" />
       <separator />
       <placeholder name="Timeline" />
