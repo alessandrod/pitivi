@@ -134,6 +134,9 @@ def beautify_stream(stream):
         return _("<b>Unknown Audio format:</b> %s") % stream.audiotype
 
     elif type(stream) == VideoStream:
+        if stream.width is None:
+            return "Video Thing"
+
         if stream.raw:
             if stream.framerate.num:
                 templ = _("<b>Video:</b> %d x %d <i>pixels</i> at %.2f<i>fps</i>")
