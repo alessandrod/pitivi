@@ -2,6 +2,7 @@
 import cairo
 import gobject
 import gst
+from pitivi.elements.imagefreeze import ImageFreeze
 from pitivi.factories.base import SourceFactory
 from pitivi.stream import VideoStream
 
@@ -112,14 +113,13 @@ class TitleSourceFactory(SourceFactory):
     def _makeStreamBin(self, output_stream=None):
         bin = gst.Bin()
         src = TitleSource(**self.source_kw)
+        freeze = ImageFreeze()
         csp = gst.element_factory_make('ffmpegcolorspace')
         capsfilter = gst.element_factory_make('capsfilter')
         capsfilter.props.caps = output_stream.caps.copy()
 
-        bin.add(src)
-        bin.add(csp)
-        bin.add(capsfilter)
-        gst.element_link_many(src, csp, capsfilter)
+        bin.add(src, freeze, csp, capsfilter)
+        gst.element_link_many(src, freeze, csp, capsfilter)
 
         target = capsfilter.get_pad('src')
         ghost = gst.GhostPad('src', target)
