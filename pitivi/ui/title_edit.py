@@ -8,7 +8,7 @@ def get_color(c):
         c.props.color.red_float,
         c.props.color.green_float,
         c.props.color.blue_float,
-        c.props.alpha / 65536.0)
+        c.props.alpha / 65535.0)
 
 class TitleEditDialog(GladeWindow):
     glade_file = "title_edit.glade"
