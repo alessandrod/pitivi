@@ -40,6 +40,9 @@ class TitleEditDialog(GladeWindow):
         # undo that.
         del self.run
 
+    def set(self, **kw):
+        self.__dict__.update(kw)
+
     def _copy_to_dialog(self):
         buffer = self.widgets['textview'].props.buffer
         buffer.set_text(self.text)
