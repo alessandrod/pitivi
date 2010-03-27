@@ -3,7 +3,7 @@ import gtk
 
 from pitivi.ui.glade import GladeWindow
 
-def color_tuple(c):
+def get_color(c):
     return (
         c.props.color.red_float,
         c.props.color.green_float,
@@ -42,8 +42,8 @@ class TitleEditDialog(GladeWindow):
         self.font, size_str = font_name.rsplit(None, 1)
         self.text_size = int(size_str)
 
-        self.bg_color = color_tuple(self.widgets['bgcolor_button'])
-        self.fg_color = color_tuple(self.widgets['fgcolor_button'])
+        self.bg_color = get_color(self.widgets['bgcolor_button'])
+        self.fg_color = get_color(self.widgets['fgcolor_button'])
 
         for i, (x_alignment, y_alignment) in enumerate([
                 (0.0, 0.0), (0.5, 0.0), (1.0, 0.0),
