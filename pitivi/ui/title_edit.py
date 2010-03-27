@@ -10,6 +10,11 @@ def get_color(c):
         c.props.color.blue_float,
         c.props.alpha / 65535.0)
 
+alignments = [
+        (0.0, 0.0), (0.5, 0.0), (1.0, 0.0),
+        (0.0, 0.5), (0.5, 0.5), (1.0, 0.5),
+        (0.0, 1.0), (0.5, 1.0), (1.0, 1.0)]
+
 class TitleEditDialog(GladeWindow):
     glade_file = "title_edit.glade"
 
@@ -45,10 +50,7 @@ class TitleEditDialog(GladeWindow):
         self.bg_color = get_color(self.widgets['bgcolor_button'])
         self.fg_color = get_color(self.widgets['fgcolor_button'])
 
-        for i, (x_alignment, y_alignment) in enumerate([
-                (0.0, 0.0), (0.5, 0.0), (1.0, 0.0),
-                (0.0, 0.5), (0.5, 0.5), (1.0, 0.5),
-                (0.0, 1.0), (0.5, 1.0), (1.0, 1.0)]):
+        for i, (x_alignment, y_alignment) in enumerate(alignments):
             if self.widgets['radiobutton%d' % (i + 1)].props.active:
                 break
 
