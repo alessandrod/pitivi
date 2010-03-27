@@ -298,7 +298,8 @@ class PitiviMainWindow(gtk.Window, Loggable):
             ("Loop", gtk.STOCK_REFRESH, _("Loop"), None, LOOP,
                 self.loop),
             ("Help", None, _("_Help")),
-            ("AddTitle", None, _("Add title..."), None, None, self._addTitleCb),
+            ("AddTitle", gtk.STOCK_ADD, _("Add title..."), None, None,
+                self._addTitleCb),
         ]
 
         self.toggleactions = [
