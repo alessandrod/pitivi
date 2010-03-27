@@ -37,9 +37,7 @@ class TitleEditDialog(GladeWindow):
         # undo that.
         del self.run
 
-    def run(self):
-        response = gtk.Dialog.run(self.window)
-
+    def _copy_from_dialog(self):
         buffer = self.widgets['textview'].props.buffer
         self.text = buffer.get_text(*buffer.get_bounds())
 
@@ -56,5 +54,9 @@ class TitleEditDialog(GladeWindow):
 
         self.x_alignment = x_alignment
         self.y_alignment = y_alignment
+
+    def run(self):
+        response = gtk.Dialog.run(self.window)
+        self._copy_from_dialog()
         return response
 
