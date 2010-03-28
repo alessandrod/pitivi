@@ -867,6 +867,7 @@ class SourceList(gtk.VBox, Loggable):
                     props[key] = getattr(dialog, key)
 
                 factory.set(**props)
+                self.storemodel[path][COL_SHORT_TEXT] = dialog.text
 
     def _textBoxButtonPressEventCb(self, textbox, event):
         if event.button == 3:
