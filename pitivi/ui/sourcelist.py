@@ -241,6 +241,7 @@ class SourceList(gtk.VBox, Loggable):
         # default pixbufs
         self.audiofilepixbuf = self._getIcon("audio-x-generic", "pitivi-sound.png")
         self.videofilepixbuf = self._getIcon("video-x-generic", "pitivi-video.png")
+        self.titlepixbuf = self._getIcon("font-x-generic", "pitivi-video.png")
 
         # Drag and Drop
         self.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
@@ -502,7 +503,10 @@ class SourceList(gtk.VBox, Loggable):
                 thumbnail_large = pixbuf.scale_simple(96,
                         desiredheight, gtk.gdk.INTERP_BILINEAR)
         else:
-            if video:
+            if isinstance(factory, TitleSourceFactory):
+                thumbnail = self.titlepixbuf
+                thumbnail_large = self.titlepixbuf
+            elif video:
                 thumbnail = self.videofilepixbuf
                 thumbnail_large = self.videofilepixbuf
             else:
