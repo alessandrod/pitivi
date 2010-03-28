@@ -850,8 +850,7 @@ class SourceList(gtk.VBox, Loggable):
 
     def _iconViewItemActivated(self, view, path):
         self._dragButton = None
-        iter = self.storemodel.get_iter((0,))
-        factory = self.storemodel.get(iter, 3)[0]
+        factory = self.storemodel[path][COL_FACTORY]
 
         if isinstance(factory, TitleSourceFactory):
             dialog = TitleEditDialog(**factory.source_kw)
