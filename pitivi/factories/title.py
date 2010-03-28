@@ -22,6 +22,9 @@ class TitleSourceFactory(SourceFactory):
         self.source_kw = kw
         self.default_duration = 5 * gst.SECOND
 
+    def _makeDefaultBin(self):
+        return self._makeStreamBin(self.output_streams[0])
+
     def _makeStreamBin(self, output_stream=None):
         bin = gst.Bin()
         src = TitleSource(**self.source_kw)
