@@ -655,17 +655,16 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog.window.set_default_response(gtk.RESPONSE_OK)
         response = dialog.run()
 
-        if response != gtk.RESPONSE_OK:
-            return
+        if response == gtk.RESPONSE_OK:
+            self.app.current.sources.addFactory(TitleSourceFactory(
+                text=dialog.text,
+                text_size=dialog.text_size,
+                font=dialog.font,
+                x_alignment=dialog.x_alignment,
+                y_alignment=dialog.y_alignment,
+                bg_color=dialog.bg_color,
+                fg_color=dialog.fg_color))
 
-        self.app.current.sources.addFactory(TitleSourceFactory(
-            text=dialog.text,
-            text_size=dialog.text_size,
-            font=dialog.font,
-            x_alignment=dialog.x_alignment,
-            y_alignment=dialog.y_alignment,
-            bg_color=dialog.bg_color,
-            fg_color=dialog.fg_color))
         dialog.destroy()
 
     def _undoCb(self, action):
