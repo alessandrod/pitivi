@@ -10,7 +10,7 @@ class TitleSource(gst.BaseSrc):
                         gst.PAD_ALWAYS,
                         #gst.Caps("video/x-raw-rgb,depth=24,bpp=32"))
                         # XXX: hardcoded width and height
-                        gst.Caps("video/x-raw-rgb,depth=24,bpp=32,width=720,height=576"))
+                        gst.Caps("video/x-raw-rgb,depth=32,bpp=32,width=720,height=576"))
         )
 
     def __init__(self, text='title',
@@ -49,7 +49,7 @@ class TitleSource(gst.BaseSrc):
         width = 720
         height = 576
 
-        surface = cairo.ImageSurface(cairo.FORMAT_RGB24, width, height)
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
         cr = cairo.Context(surface)
 
         # background
