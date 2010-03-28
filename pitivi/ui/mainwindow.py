@@ -651,6 +651,8 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
     def _addTitleCb(self, unused_action):
         dialog = TitleEditDialog()
+        dialog.window.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        dialog.window.set_default_response(gtk.RESPONSE_OK)
         response = dialog.run()
 
         if response != gtk.RESPONSE_OK:
