@@ -41,8 +41,10 @@ from pitivi.settings import GlobalSettings
 from pitivi.utils import beautify_length
 from pitivi.ui.common import beautify_factory, factory_name, \
     beautify_stream
+from pitivi.ui.title_edit import TitleEditDialog
 from pitivi.log.loggable import Loggable
 from pitivi.sourcelist import SourceListError
+from pitivi.factories.title import TitleSourceFactory
 
 SHOW_TREEVIEW = 1
 SHOW_ICONVIEW = 2
@@ -196,6 +198,7 @@ class SourceList(gtk.VBox, Loggable):
         self.iconview_scrollwin.add(self.iconview)
         self.iconview.connect("button-press-event", self._iconViewButtonPressEventCb)
         self.iconview.connect("selection-changed", self._viewSelectionChangedCb)
+        self.iconview.connect("item-activated", self._iconViewItemActivated)
         self.iconview.set_orientation(gtk.ORIENTATION_VERTICAL)
         self.iconview.set_text_column(COL_SHORT_TEXT)
         self.iconview.set_pixbuf_column(COL_ICON_LARGE)
@@ -830,25 +833,37 @@ class SourceList(gtk.VBox, Loggable):
             self._dragX = int(event.x)
             self._dragY = int(event.y)
 
-        if chain_up:
-            gtk.IconView.do_button_press_event(iconview, event)
-        else:
+        if not chain_up:
             iconview.grab_focus()
 
-        self._ignoreRelease = chain_up
-
-        return True
+        return False
 
     def _iconViewButtonReleaseCb(self, iconview, event):
         if event.button == self._dragButton:
             self._dragButton = None
             self._dragSelection = False
-            if (not self._ignoreRelease) and (not self._dragStarted):
-                iconview.unselect_all()
-                path = iconview.get_path_at_pos(int(event.x), int(event.y))
-                if path:
-                    iconview.select_path(path)
         return False
+
+    def _iconViewItemActivated(self, view, path):
+        self._dragButton = None
+        iter = self.storemodel.get_iter((0,))
+        factory = self.storemodel.get(iter, 3)[0]
+
+        if isinstance(factory, TitleSourceFactory):
+            dialog = TitleEditDialog(**factory.source_kw)
+            dialog.window.add_button(gtk.STOCK_APPLY, gtk.RESPONSE_OK)
+            dialog.window.set_default_response(gtk.RESPONSE_OK)
+            response = dialog.run()
+            dialog.destroy()
+
+            if response == gtk.RESPONSE_OK:
+                # Copy attributes from dialog back to factory.
+                props = {}
+
+                for key in factory.source_kw.keys():
+                    props[key] = getattr(dialog, key)
+
+                factory.set(**props)
 
     def _textBoxButtonPressEventCb(self, textbox, event):
         if event.button == 3:

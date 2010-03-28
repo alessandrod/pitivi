@@ -45,3 +45,8 @@ class TitleSourceFactory(SourceFactory):
     def _releaseBin(self, bin):
         pass
 
+    def set(self, **props):
+        self.source_kw.update(props)
+
+        # XXX: Propagate changes to track objects here.
+
