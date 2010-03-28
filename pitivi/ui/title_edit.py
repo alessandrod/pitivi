@@ -11,9 +11,8 @@ def get_color(c):
         c.props.alpha / 65535.0)
 
 def set_color(c, t):
-    c.props.color.red_float = t[0]
-    c.props.color.red_float = t[1]
-    c.props.color.red_float = t[2]
+    c.props.color = gtk.gdk.Color(
+        int(t[0] * 65535.0), int(t[1] * 65535.0), int(t[2] * 65535.0))
     c.props.alpha = int(t[3] * 65535.0)
 
 alignments = [
