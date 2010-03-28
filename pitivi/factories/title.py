@@ -47,6 +47,7 @@ class TitleSourceFactory(SourceFactory):
 
     def set(self, **props):
         self.source_kw.update(props)
+        self.name = self.source_kw['text']
 
         # XXX: Propagate changes to track objects here.
 
