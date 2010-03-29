@@ -35,13 +35,13 @@ class TitleSourceFactory(SourceFactory):
         pad = bin.src.get_pad('src')
         pad.set_caps(self.filter_caps)
 
-        freeze = ImageFreeze()
+        bin.freeze = ImageFreeze()
         csp = gst.element_factory_make('alphacolor')
         capsfilter = gst.element_factory_make('capsfilter')
         capsfilter.props.caps = output_stream.caps.copy()
 
-        bin.add(bin.src, freeze, csp, capsfilter)
-        gst.element_link_many(bin.src, freeze, csp, capsfilter)
+        bin.add(bin.src, bin.freeze, csp, capsfilter)
+        gst.element_link_many(bin.src, bin.freeze, csp, capsfilter)
 
         target = capsfilter.get_pad('src')
         ghost = gst.GhostPad('src', target)
@@ -70,5 +70,27 @@ class TitleSourceFactory(SourceFactory):
         self.source_kw.update(props)
         self.name = self.source_kw['text']
 
-        # XXX: Propagate changes to track objects here.
+        for bin in self.bins:
+            bin.src.__dict__.update(props)
+
+            # This is hacky but gets the job done.
+            #
+            # ImageFreeze throws its cached buffer away on the flush start,
+            # but we also need to make the source restart its task. The source
+            # is PAUSED because ImageFreeze returns FLOW_WRONG_STATE after it
+            # gets the buffer. It seems the source doesn't restart its task
+            # after PAUSED -> PLAYING, unless it's been to READY first.
+            #
+            # Doing the state change without doing a flush first makes it hang
+            # for some reason.
+
+            sinkpad = bin.freeze.get_pad('sink')
+
+            event = gst.event_new_flush_start()
+            sinkpad.send_event(event)
+            event = gst.event_new_flush_stop()
+            sinkpad.send_event(event)
+
+            bin.set_state(gst.STATE_READY)
+            bin.set_state(gst.STATE_PLAYING)
 
