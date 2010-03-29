@@ -672,24 +672,26 @@ class ElementTreeFormatter(Formatter):
             return
 
         uris = []
+        discover_sources = []
 
         for source in sources:
             if isinstance(source, TitleSourceFactory):
                 project.sources.addFactory(source)
             else:
                 uris.append(source.uri)
+                discover_sources.append(source)
 
         discoverer = project.sources.discoverer
         discoverer.connect("discovery-done", self._discovererDiscoveryDoneCb,
-                project, sources, uris, closure)
+                project, discover_sources, uris, closure)
         discoverer.connect("discovery-error", self._discovererDiscoveryErrorCb,
-                project, sources, uris, closure)
+                project, discover_sources, uris, closure)
 
         if not uris:
             self._finishLoadingProject(project)
             return
         # start the rediscovering from the first source
-        source = sources[0]
+        source = discover_sources[0]
         discoverer.addUri(source.uri)
 
     def _findFactoryContextKey(self, old_factory):
