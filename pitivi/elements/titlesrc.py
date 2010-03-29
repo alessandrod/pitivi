@@ -38,16 +38,13 @@ class TitleSource(gst.BaseSrc):
 
     def do_create(self, offset, size):
         gst.debug("offset: %r, size:%r" % (offset, size))
-        #print self.__dict__
 
         pad = self.get_pad('src')
         caps = pad.get_negotiated_caps()
 
-        # XXX: width/height don't seem to get negotiated; hardcode them for
-        # now
-        #width, height = caps[0]['width'], caps[0]['height']
-        width = 720
-        height = 576
+        assert caps[0].has_field('width')
+        assert caps[0].has_field('height')
+        width, height = caps[0]['width'], caps[0]['height']
 
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
         cr = cairo.Context(surface)
