@@ -35,13 +35,14 @@ class TitleSourceFactory(SourceFactory):
         pad = bin.src.get_pad('src')
         pad.set_caps(self.filter_caps)
 
-        bin.freeze = ImageFreeze()
         csp = gst.element_factory_make('alphacolor')
+        bin.freeze = ImageFreeze()
+        bin.alpha = gst.element_factory_make("alpha", "internal-alpha")
         capsfilter = gst.element_factory_make('capsfilter')
         capsfilter.props.caps = output_stream.caps.copy()
 
-        bin.add(bin.src, bin.freeze, csp, capsfilter)
-        gst.element_link_many(bin.src, bin.freeze, csp, capsfilter)
+        bin.add(bin.src, csp, bin.freeze, bin.alpha, capsfilter)
+        gst.element_link_many(bin.src, csp, bin.freeze, bin.alpha, capsfilter)
 
         target = capsfilter.get_pad('src')
         ghost = gst.GhostPad('src', target)
