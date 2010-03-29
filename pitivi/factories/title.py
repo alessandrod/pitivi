@@ -36,7 +36,7 @@ class TitleSourceFactory(SourceFactory):
         pad.set_caps(self.filter_caps)
 
         freeze = ImageFreeze()
-        csp = gst.element_factory_make('ffmpegcolorspace')
+        csp = gst.element_factory_make('alphacolor')
         capsfilter = gst.element_factory_make('capsfilter')
         capsfilter.props.caps = output_stream.caps.copy()
 
