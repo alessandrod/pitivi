@@ -205,12 +205,7 @@ class RandomAccessPreviewer(Previewer):
         Previewer.__init__(self, instance, factory, stream_)
         self._queue = []
 
-        # FIXME:
-        # why doesn't this work?
-        # bin = factory.makeBin(stream_)
-        uri = factory.uri
-        caps = stream_.caps
-        bin = SingleDecodeBin(uri=uri, caps=caps, stream=stream_)
+        bin = factory.makeBin(stream_)
 
         # assume 50 pixel height
         self.theight = 50
