@@ -869,6 +869,19 @@ class SourceList(gtk.VBox, Loggable):
                 factory.set(**props)
                 self.storemodel[path][COL_SHORT_TEXT] = dialog.text
 
+                # XXX: Hack hack hack.
+                # The source should probably update the track objects directly.
+
+                ui_tracks = self.app.gui.timeline._canvas.tracks
+                n_children = ui_tracks.get_n_children()
+
+                for n in xrange(n_children):
+                    track = ui_tracks.get_child(n)
+
+                    for source, ui_trackobj in track.widgets.iteritems():
+                        # Force canvas element to update name.
+                        ui_trackobj.element = source
+
     def _textBoxButtonPressEventCb(self, textbox, event):
         if event.button == 3:
             self._viewShowPopup(None, event)
