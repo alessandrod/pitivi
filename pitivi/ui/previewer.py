@@ -219,11 +219,21 @@ class RandomAccessPreviewer(Previewer):
         self.pipeline = self._pipelineInit(factory, bin)
         self.pipeline.set_state(gst.STATE_PAUSED)
 
+        instance.connect('project-closed', self._pipelineShutdown)
+        self.project = instance.current
+
     def _pipelineInit(self, factory, bin):
         """Create the pipeline for the preview process. Subclasses should
         override this method and create a pipeline, connecting to callbacks to
         the appropriate signals, and prerolling the pipeline if necessary."""
         raise NotImplementedError
+
+    def _pipelineShutdown(self, instance, project):
+        # Ensure that there aren't any zombie pipelines around; they can cause
+        # deadlocks on exit.
+
+        if project == self.project:
+            self.pipeline.set_state(gst.STATE_NULL)
 
 ## public interface
 
