@@ -35,7 +35,6 @@ from gst.pbutils import INSTALL_PLUGINS_SUCCESS, \
         INSTALL_PLUGINS_PARTIAL_SUCCESS, INSTALL_PLUGINS_USER_ABORT, \
         INSTALL_PLUGINS_STARTED_OK
 import tempfile
-import hashlib
 
 from pitivi.log.loggable import Loggable
 from pitivi.factories.file import FileSourceFactory, PictureFileSourceFactory
@@ -48,6 +47,19 @@ from pitivi.settings import xdg_cache_home
 # i.e. remember the path took to get to a raw stream, and figure out
 # what encoded format it is
 # We will need that in order to create proper Stream objects.
+
+try:
+    import hashlib
+    def makeMd5(uri):
+        md5sum = hashlib.md5()
+        md5sum.update(uri)
+        return md5sum.hexdigest()
+except ImportError:
+    import md5
+    def makeMd5(uri):
+        md5sum = md5.new()
+        md5sum.update(uri)
+        return md5sum.digest()
 
 class EOSSir(gst.Element):
     __gstdetails__ = (
@@ -517,10 +529,7 @@ class Discoverer(Signallable, Loggable):
 
     def _getThumbnailFilenameFromPad(self, pad):
         base = xdg_cache_home()
-        name = self.current_uri
-        md5sum = hashlib.md5()
-        md5sum.update(self.current_uri)
-        name = md5sum.hexdigest() + '.png'
+        name = makeMd5(self.current_uri) + '.png'
         directory = os.path.join(base, "pitivi")
         try:
             os.makedirs(directory)
