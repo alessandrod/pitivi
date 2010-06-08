@@ -56,8 +56,11 @@ except:
 #
 
 def have_hal():
-    bus = dbus.SystemBus()
-    return 'org.freedesktop.Hal' in bus.list_names()
+    try:
+        bus = dbus.SystemBus()
+        return 'org.freedesktop.Hal' in bus.list_names()
+    except AttributeError:
+        return False
 
 def get_probe():
     """
