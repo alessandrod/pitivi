@@ -169,7 +169,10 @@ class Interpolator(Signallable, Loggable):
         else:
             self.end.setObjectTime(trackobject.out_point)
         self._keyframeTimeValueChanged(self.end, self.end.time, self.end.value)
-        self.format = format if format else str
+        if format:
+            self.format = format
+        else:
+            self.format = str
 
     def attachToElementProperty(self, prop, element):
         self._element = element
