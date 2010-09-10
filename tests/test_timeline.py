@@ -629,6 +629,68 @@ class TestTimeline(TestCase):
             min_priority=3, max_priority=4)
         self.failUnlessEqual(result, tmp_obj_list)
 
+    def testGetKeyframe(self):
+        timeline_object1 = self.makeTimelineObject()
+        timeline_object3 = self.makeTimelineObject()
+
+        timeline_object1.start = 1 * gst.SECOND
+        timeline_object1.duration = 5 * gst.SECOND
+        timeline_object1.priority = 1
+
+        timeline_object3.start = 15 * gst.SECOND
+        timeline_object3.duration = 5 * gst.SECOND
+        timeline_object3.priority = 2
+
+        factory = AudioTestSourceFactory()
+        stream = AudioStream(gst.Caps("audio/x-raw-int"))
+        track_object = SourceTrackObject(factory, stream)
+        self.track1.addTrackObject(track_object)
+        timeline_object2 = TimelineObject(factory)
+        timeline_object2.addTrackObject(track_object)
+        self.timeline.addTimelineObject(timeline_object2)
+        timeline_object2.start = 3 * gst.SECOND
+        timeline_object2.duration = 10 * gst.SECOND
+        timeline_object2.priority = 1
+
+        interpolator = track_object.getInterpolator("volume")
+        keyframe_position = 8 * gst.SECOND
+        interpolator.newKeyframe(keyframe_position, 0.0, "mode")
+
+        timeline = self.timeline
+
+        time1 = 0
+        time2 = 2 * gst.SECOND
+        time3 = 7 * gst.SECOND
+        time4 = 10 * gst.SECOND
+        time5 = 14 * gst.SECOND
+        time6 = 25 * gst.SECOND
+
+        result = timeline.getPrevKeyframe(time1)
+        self.failUnlessEqual(result, None)
+        result = timeline.getPrevKeyframe(time2)
+        self.failUnlessEqual(result, 1 * gst.SECOND)
+        result = timeline.getPrevKeyframe(time3)
+        self.failUnlessEqual(result, 6 * gst.SECOND)
+        result = timeline.getPrevKeyframe(time4)
+        self.failUnlessEqual(result, 8 * gst.SECOND)
+        result = timeline.getPrevKeyframe(time5)
+        self.failUnlessEqual(result, 13 * gst.SECOND)
+        result = timeline.getPrevKeyframe(time6)
+        self.failUnlessEqual(result, 20 * gst.SECOND)
+
+        result = timeline.getNextKeyframe(time1)
+        self.failUnlessEqual(result, 1 * gst.SECOND)
+        result = timeline.getNextKeyframe(time2)
+        self.failUnlessEqual(result, 3 * gst.SECOND)
+        result = timeline.getNextKeyframe(time3)
+        self.failUnlessEqual(result, 8 * gst.SECOND)
+        result = timeline.getNextKeyframe(time4)
+        self.failUnlessEqual(result, 13 * gst.SECOND)
+        result = timeline.getNextKeyframe(time5)
+        self.failUnlessEqual(result, 15 * gst.SECOND)
+        result = timeline.getNextKeyframe(time6)
+        self.failUnlessEqual(result, None)
+
 
 class TestLink(TestCase):
 
