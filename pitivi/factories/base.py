@@ -416,7 +416,6 @@ class SourceFactory(ObjectFactory):
                 b.csp = gst.element_factory_make("identity")
 
             b.alpha = gst.element_factory_make("alpha", "internal-alpha")
-            b.alpha.props.prefer_passthrough = True
             b.scale = gst.element_factory_make("videoscale")
             try:
                 b.scale.props.add_borders = True
