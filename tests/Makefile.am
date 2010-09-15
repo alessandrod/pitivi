@@ -11,7 +11,6 @@ tests = \
 	test_timeline_undo.py		\
 	test_integration.py			\
 	test_transitions.py			\
-	test_alpha_passthrough.py		\
 	test_still_image.py			\
 	test_gap.py
 
