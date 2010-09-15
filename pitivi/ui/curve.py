@@ -173,7 +173,7 @@ class Curve(goocanvas.ItemSimple, goocanvas.Item, View, Zoomable):
     interpolator = receiver()
 
     @handler(interpolator, "keyframe-removed")
-    def keyframeRemoved(self, unused_interpolator, keyframe, old_value=None):
+    def keyframeRemoved(self, unused_interpolator, keyframe):
         if keyframe in self.keyframes:
             del self.keyframes[keyframe]
             if keyframe is self._focused_kf:
@@ -181,11 +181,8 @@ class Curve(goocanvas.ItemSimple, goocanvas.Item, View, Zoomable):
         self.changed(False)
 
     @handler(interpolator, "keyframe-added")
-    def curveChanged(self, unused_interpolator, unused_keyframe):
-        self.changed(False)
-
     @handler(interpolator, "keyframe-moved")
-    def curveChanged(self, unused_interpolator, unused_keyframe, old_value=None):
+    def curveChanged(self, unused_interpolator, unused_keyframe):
         self.changed(False)
 
 ## Zoomable interface overries
